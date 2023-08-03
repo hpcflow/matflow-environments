@@ -18,8 +18,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: mamba-org/setup-micromamba@v1
       - run: |
-          micromamba create -n base_env python
+          micromamba create -n base_env -c conda-forge python conda-lock 
       - run: |
-          micromamba run -n base_env install -c conda-forge conda-lock
-      - run: |
-          micromamba run -n base_env conda-lock lock ${{ github.event.inputs.environment }}/environment.yaml
+          micromamba activate base_env
+          micromamba conda-lock lock ${{ github.event.inputs.environment }}/environment.yaml
