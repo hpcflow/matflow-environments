@@ -11,9 +11,14 @@ on:
 jobs:
   conda-lock:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
     steps:
+      - uses: actions/checkout@v3
       - uses: mamba-org/setup-micromamba@v1
-      - run: micromamba install -c conda-forge conda-lock
-        shell: bash -el {0}
-      - run: conda-lock lock ${{ github.event.inputs.environment }}/environment.yaml
-        shell: bash -el {0}
+      - run: |
+          micromamba create -n base python
+          micromamba install -c conda-forge conda-lock
+      - run: |
+          conda-lock lock ${{ github.event.inputs.environment }}/environment.yaml
