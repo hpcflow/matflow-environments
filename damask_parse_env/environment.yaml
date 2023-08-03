@@ -1,0 +1,9 @@
+name: damask_parse_env
+channels:
+  - conda-forge
+dependencies:
+  - python
+  - pip
+  - pip:
+      - matflow-new
+      - damask-parse
