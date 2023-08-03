@@ -13,6 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: mamba-org/setup-micromamba@v1
+        with:
+          init-shell: bash
       - run: micromamba install -c conda-forge conda-lock
       - run: conda-lock lock ${{ github.event.inputs.environment }}/environment.yaml
         shell: bash -el {0}
