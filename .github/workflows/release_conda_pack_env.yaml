@@ -19,6 +19,7 @@ jobs:
       - uses: mamba-org/setup-micromamba@v1
       - run: |
           micromamba create -n base_env python
+      - run: |
           micromamba activate base_env
           micromamba install -c conda-forge conda-lock
       - run: |
