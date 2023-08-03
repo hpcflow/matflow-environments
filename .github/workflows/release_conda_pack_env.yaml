@@ -17,8 +17,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: mamba-org/setup-micromamba@v1
-      - run: |
+      - name: Create a base micromamba environment and install conda-lock
+        run: |
           micromamba create -n base_env -c conda-forge python conda-lock 
-      - run: |
+      - name: Run conda-lock
+        run: |
           micromamba activate base_env
-          conda-lock lock --file ${{ github.event.inputs.environment }}/environment.yaml
+          conda-lock lock --file ${{ github.event.inputs.environment }}/environment.yaml --lockfile ${{ github.event.inputs.environment }}-conda-lock.yaml
+      - name: Upload conda-lock file
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ github.event.inputs.environment }}-conda-lock.yaml
+          path: ${{ github.event.inputs.environment }}-conda-lock.yaml
