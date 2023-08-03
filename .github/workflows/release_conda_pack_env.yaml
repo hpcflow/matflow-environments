@@ -27,6 +27,7 @@ jobs:
       - name: Create and pack environment
         run: |
           micromamba create --file ${{ github.event.inputs.environment }}-conda-lock.yaml
+          micromamba activate base_env
           conda pack -n ${{ github.event.inputs.environment }}
       - name: Upload conda-lock file
         uses: actions/upload-artifact@v3
