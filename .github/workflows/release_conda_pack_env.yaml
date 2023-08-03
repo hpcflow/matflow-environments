@@ -21,4 +21,4 @@ jobs:
           micromamba create -n base_env -c conda-forge python conda-lock 
       - run: |
           micromamba activate base_env
-          micromamba conda-lock lock ${{ github.event.inputs.environment }}/environment.yaml
+          micromamba conda-lock lock --file ${{ github.event.inputs.environment }}/environment.yaml
