@@ -20,7 +20,6 @@ jobs:
       - run: |
           micromamba create -n base_env python
       - run: |
-          micromamba activate base_env
-          micromamba install -c conda-forge conda-lock
+          micromamba run -n base_env install -c conda-forge conda-lock
       - run: |
-          conda-lock lock ${{ github.event.inputs.environment }}/environment.yaml
+          micromamba run -n base_env conda-lock lock ${{ github.event.inputs.environment }}/environment.yaml
