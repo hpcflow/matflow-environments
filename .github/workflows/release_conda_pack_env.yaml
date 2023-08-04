@@ -48,7 +48,7 @@ jobs:
           micromamba --root-prefix /root/micromamba create --name ${{ github.event.inputs.environment }}-linux --file ${{ github.event.inputs.environment }}-conda-lock.yaml
       - name: Pack the environment
         run: |          
-          micromamba --root-prefix /root/micromamba run -n base_env conda-pack --prefix $MAMBA_ROOT_PREFIX/envs/damask_parse_env-linux
+          micromamba --root-prefix /root/micromamba run -n base_env conda-pack --prefix /root/micromamba/envs/damask_parse_env-linux
       - name: Upload conda-packed environment 
         uses: actions/upload-artifact@v3
         with:
