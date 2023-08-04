@@ -40,9 +40,9 @@ jobs:
       image: ghcr.io/hpcflow/centos7-micromamba:latest
     steps:
       - name: Download conda-lock file
-        uses: actions/upload-artifact@v3
+        uses: actions/download-artifact@v3
         with:
-          path: ${{ github.event.inputs.environment }}-conda-lock.yaml
+          name: ${{ github.event.inputs.environment }}-conda-lock.yaml
       - name: Create the environment
         run: |
           micromamba create --name ${{ github.event.inputs.environment }}-linux --file ${{ github.event.inputs.environment }}-conda-lock.yaml
