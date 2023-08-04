@@ -8,13 +8,14 @@ RUN /bin/bash <<InstallLibGL
     yum install -y mesa-libGL
 InstallLibGL
 
-RUN /bin/bash <<InstallMicroMamba
+RUN /bin/bash -l <<InstallMicroMamba
     "${SHELL}" <(curl -L micro.mamba.pm/install.sh)
+    micromamba shell init --shell bash --root-prefix=~/micromamba
 InstallMicroMamba
 
 # create a base micromamba environment in which we install conda-pack
-RUN /bin/bash <<CreateBaseEnv
-    micromamba create -n base_env -c conda-forge python conda-pack
+RUN /bin/bash -l <<CreateBaseEnv
+    micromamba create -n base_env -c conda-forge python conda-pack conda-lock
 CreateBaseEnv
 
 CMD [ "/bin/bash", "-l"]

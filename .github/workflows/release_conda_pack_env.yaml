@@ -33,6 +33,9 @@ jobs:
   conda-pack-linux-centos:
     needs: [conda-lock]
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
     container:
       image: ghcr.io/hpcflow/centos7-micromamba:latest
     steps:
