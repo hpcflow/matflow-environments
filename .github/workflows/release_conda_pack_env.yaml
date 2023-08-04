@@ -30,7 +30,7 @@ jobs:
           name: ${{ github.event.inputs.environment }}-conda-lock.yaml
           path: ${{ github.event.inputs.environment }}-conda-lock.yaml
   
-  conda-pack-linux-centos:
+  conda-pack-linux:
     needs: [conda-lock]
     runs-on: ubuntu-latest
     defaults:
@@ -45,10 +45,10 @@ jobs:
           name: ${{ github.event.inputs.environment }}-conda-lock.yaml
       - name: Create the environment
         run: |
-          micromamba create --root-prefix /root/micromamba --name ${{ github.event.inputs.environment }}-linux --file ${{ github.event.inputs.environment }}-conda-lock.yaml
+          micromamba --root-prefix /root/micromamba create --name ${{ github.event.inputs.environment }}-linux --file ${{ github.event.inputs.environment }}-conda-lock.yaml
       - name: Pack the environment
         run: |
-          micromamba run --root-prefix /root/micromamba -n base_env conda pack -n ${{ github.event.inputs.environment }}-linux
+          micromamba --root-prefix /root/micromamba run -n base_env conda pack -n ${{ github.event.inputs.environment }}-linux
       - name: Upload conda-packed environment 
         uses: actions/upload-artifact@v3
         with:
