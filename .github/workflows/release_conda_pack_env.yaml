@@ -36,7 +36,7 @@ jobs:
     defaults:
       run:
         shell: bash -l {0}
-    container:
+    container:  
       image: ghcr.io/hpcflow/centos7-micromamba:latest
     steps:
       - name: Download conda-lock file
@@ -45,7 +45,7 @@ jobs:
           name: ${{ github.event.inputs.environment }}-conda-lock.yaml
       - name: Create the environment
         run: |
-          micromamba create --name ${{ github.event.inputs.environment }}-linux --file ${{ github.event.inputs.environment }}-conda-lock.yaml
+          micromamba create --root-prefix /root/micromamba --name ${{ github.event.inputs.environment }}-linux --file ${{ github.event.inputs.environment }}-conda-lock.yaml
       - name: Pack the environment
         run: |
           micromamba run -n base_env conda pack -n ${{ github.event.inputs.environment }}-linux
