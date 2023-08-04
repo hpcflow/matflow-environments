@@ -48,7 +48,6 @@ jobs:
           micromamba create --name ${{ github.event.inputs.environment }}-linux --file ${{ github.event.inputs.environment }}-conda-lock.yaml
       - name: Pack the environment
         run: |
-          micromamba activate base_env
           micromamba run -n base_env conda pack -n ${{ github.event.inputs.environment }}-linux
       - name: Upload conda-packed environment 
         uses: actions/upload-artifact@v3
