@@ -54,7 +54,7 @@ jobs:
     
   conda-pack-windows:
     needs: [conda-lock]
-    runs-on: window-latest
+    runs-on: windows-latest
     steps:
       - name: Download conda-lock file
         uses: actions/download-artifact@v3
