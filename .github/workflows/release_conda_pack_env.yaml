@@ -49,7 +49,7 @@ jobs:
       - name: Pack the environment
         run: |
           micromamba activate base_env
-          conda pack -n ${{ github.event.inputs.environment }}-linux
+          micromamba run -n base_env conda pack -n ${{ github.event.inputs.environment }}-linux
       - name: Upload conda-packed environment 
         uses: actions/upload-artifact@v3
         with:
