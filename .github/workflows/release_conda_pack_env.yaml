@@ -51,3 +51,29 @@ jobs:
         with:
           name: ${{ github.event.inputs.environment }}-linux.tar.gz
           path: ${{ github.event.inputs.environment }}-linux.tar.gz
+    
+  conda-pack-windows:
+    needs: [conda-lock]
+    runs-on: window-latest
+    steps:
+      - name: Download conda-lock file
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ github.event.inputs.environment }}-conda-lock.yaml
+      - name: Download micromamba executable
+        run: |
+          Invoke-WebRequest -UseBasicParsing https://github.com/mamba-org/micromamba-releases/releases/latest/download/micromamba-win-64 -OutFile micromamba-win-64.exe
+      - name:  Create a base environment including conda-pack
+        run: |
+          .\micromamba-win-64.exe create -y --name base_env -c conda-forge python conda-pack conda-lock
+      - name: Create the environment
+        run: |
+          .\micromamba-win-64.exe create -y --name ${{ github.event.inputs.environment }}-win --file ${{ github.event.inputs.environment }}-conda-lock.yaml
+      - name: Pack the environment
+        run: |          
+          .\micromamba-win-64.exe run --name base_env conda-pack -n ${{ github.event.inputs.environment }}-win
+      - name: Upload conda-packed environment 
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ github.event.inputs.environment }}-win.tar.gz
+          path: ${{ github.event.inputs.environment }}-win.tar.gz
