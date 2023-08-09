@@ -39,8 +39,8 @@ Sources for generating matflow environments via conda and docker
 
   ```powershell
   cmd
-  \path\to\damask_parse_env_mf_a35_dp_2.23_d_3a7_py_3.9\Scripts\activate.bay
-  \path\to\damask_parse_env_mf_a35_dp_2.23_d_3a7_py_3.9\Scripts\deactivate.bay
+  \path\to\env\Scripts\activate.bay
+  \path\to\env\Scripts\deactivate.bay
   ```
 
  
