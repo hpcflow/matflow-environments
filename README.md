@@ -39,8 +39,8 @@ Sources for generating matflow environments via conda and docker
 
   ```powershell
   cmd
-  \path\to\env\Scripts\activate.bay
-  \path\to\env\Scripts\deactivate.bay
+  \path\to\env\Scripts\activate.bat
+  \path\to\env\Scripts\deactivate.bat
   ```
 
  
