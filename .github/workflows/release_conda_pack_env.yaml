@@ -8,6 +8,7 @@ on:
         description: Choose which environment to conda-pack
         options:
           - damask_parse_env
+          - damask_env
       pack_linux:
         description: "Build a packed env for Linux?"
         required: true
