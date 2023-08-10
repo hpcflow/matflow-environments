@@ -10,7 +10,7 @@ on:
           - damask_parse_env
           - damask_env
       pack_linux:
-        description: "Loack and build a packed env for Linux?"
+        description: "Lock and build a packed env for Linux?"
         required: true
         type: boolean
         default: true
