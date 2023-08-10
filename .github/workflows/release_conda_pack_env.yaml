@@ -9,6 +9,7 @@ on:
         options:
           - damask_parse_env
           - damask_env
+          - dream3d_env
       pack_linux:
         description: "Lock and build a packed env for Linux?"
         required: true
