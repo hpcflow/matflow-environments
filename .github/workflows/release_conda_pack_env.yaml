@@ -10,23 +10,24 @@ on:
           - damask_parse_env
           - damask_env
       pack_linux:
-        description: "Build a packed env for Linux?"
+        description: "Loack and build a packed env for Linux?"
         required: true
         type: boolean
         default: true
       pack_macos:
-        description: "Build a packed env for macOS?"
+        description: "Lock and build a packed env for macOS?"
         required: true
         type: boolean
         default: true
       pack_windows:
-        description: "Build a packed env for Windows?"
+        description: "Lock and build a packed env for Windows?"
         required: true
         type: boolean
         default: true
             
 jobs:
   conda-lock:
+    if: github.event.inputs.pack_linux == 'true' || github.event.inputs.pack_macos == 'true' || github.event.inputs.pack_windows == 'true'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -37,7 +38,14 @@ jobs:
       - uses: actions/checkout@v3
       - name: Run conda-lock
         run: |
-          micromamba --root-prefix /root/micromamba run -n base_env conda-lock lock --file ${{ github.event.inputs.environment }}/environment.yaml --lockfile ${{ github.event.inputs.environment }}-conda-lock.yaml
+          micromamba --root-prefix /root/micromamba run -n base_env \
+           conda-lock lock \
+           --platform \
+              ${{ github.event.inputs.pack_linux == 'true' && 'linux-64' || '' }} \
+              ${{ github.event.inputs.pack_macos == 'true' && 'osx-64' || '' }} \
+              ${{ github.event.inputs.pack_windows == 'true' && 'win-64' || '' }} \
+           --file ${{ github.event.inputs.environment }}/environment.yaml \
+           --lockfile ${{ github.event.inputs.environment }}-conda-lock.yaml
       - name: Upload conda-lock file
         uses: actions/upload-artifact@v3
         with:
