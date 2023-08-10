@@ -1,0 +1,6 @@
+name: dream3d_env
+channels:
+  - conda-forge
+  - http://dream3d.bluequartz.net/binaries/conda
+dependencies:
+  - dream3d-conda
