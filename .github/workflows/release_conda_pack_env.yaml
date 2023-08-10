@@ -40,10 +40,9 @@ jobs:
         run: |
           micromamba --root-prefix /root/micromamba run -n base_env \
            conda-lock lock \
-           --platform \
-              ${{ github.event.inputs.pack_linux == 'true' && 'linux-64' || '' }} \
-              ${{ github.event.inputs.pack_macos == 'true' && 'osx-64' || '' }} \
-              ${{ github.event.inputs.pack_windows == 'true' && 'win-64' || '' }} \
+              ${{ github.event.inputs.pack_linux == 'true' && '--platform linux-64' || '' }} \
+              ${{ github.event.inputs.pack_macos == 'true' && '--platform osx-64' || '' }} \
+              ${{ github.event.inputs.pack_windows == 'true' && '--platform win-64' || '' }} \
            --file ${{ github.event.inputs.environment }}/environment.yaml \
            --lockfile ${{ github.event.inputs.environment }}-conda-lock.yaml
       - name: Upload conda-lock file
