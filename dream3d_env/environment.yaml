@@ -1,6 +1,6 @@
 name: dream3d_env
 channels:
-  - conda-forge
   - http://dream3d.bluequartz.net/binaries/conda
+  - conda-forge
 dependencies:
   - dream3d-conda
