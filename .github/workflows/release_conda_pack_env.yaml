@@ -40,9 +40,7 @@ jobs:
         run: |
           micromamba --root-prefix /root/micromamba run -n base_env \
            conda-lock lock \
-           ${{ github.event.inputs.pack_linux == 'true' && '--platform linux-64 \' || '' }}
-           ${{ github.event.inputs.pack_macos == 'true' && '--platform osx-64 \' || '' }}
-           ${{ github.event.inputs.pack_windows == 'true' && '--platform win-64 \' || '' }}
+           ${{ github.event.inputs.pack_linux == 'true' && '--platform linux-64 ' || '' }}${{ github.event.inputs.pack_macos == 'true' && '--platform osx-64 ' || '' }}${{ github.event.inputs.pack_windows == 'true' && '--platform win-64 ' || '' }} \
            --file ${{ github.event.inputs.environment }}/environment.yaml \
            --lockfile ${{ github.event.inputs.environment }}-conda-lock.yaml
       - name: Upload conda-lock file
@@ -70,7 +68,7 @@ jobs:
           micromamba --root-prefix /root/micromamba create --name ${{ github.event.inputs.environment }}-linux --file ${{ github.event.inputs.environment }}-conda-lock.yaml
       - name: Pack the environment
         run: |          
-          micromamba --root-prefix /root/micromamba run -n base_env conda-pack --prefix /root/micromamba/envs/damask_parse_env-linux
+          micromamba --root-prefix /root/micromamba run -n base_env conda-pack --prefix /root/micromamba/envs/${{ github.event.inputs.environment }}-linux
       - name: Upload conda-packed environment 
         uses: actions/upload-artifact@v3
         with:
