@@ -52,7 +52,7 @@ on:
         required: true
         type: boolean
         default: false
-            
+
 jobs:
   conda-lock:
     if: github.event.inputs.lock == 'true'
@@ -62,64 +62,39 @@ jobs:
         shell: bash -l {0}
     container:  
       image: ghcr.io/hpcflow/centos7-micromamba:latest
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [linux-64, osx-64, osx-arm64, win-64]
     steps:
       - uses: actions/checkout@v3
 
-      - name: Run conda-lock (all platforms)
-        if: ${{ github.event.inputs.lock-separate-windows == 'false' }}
+      - name: Run conda-lock (${{ matrix.platform }})
+        if: ${{ matrix.platform }} != 'win-64' || ${{ github.event.inputs.lock-separate-windows == 'false' }}
         run: |
           micromamba --root-prefix /root/micromamba run -n base_env \
            conda-lock lock \
-           --platform linux-64 \
-           --platform osx-64 \
-           --platform osx-arm64 \
-           --platform win-64 \
+           --platform ${{ matrix.platform }} \
            --file ${{ github.event.inputs.environment }}/environment.yaml \
-           --lockfile ${{ github.event.inputs.environment }}-conda.lock.yml \
+           --lockfile conda-${{ matrix.platform }}.lock.yml \
            --kind ${{ github.event.inputs.lock_kind }}
       
-      - name: Run conda-lock (Linux, MacOS)
-        if: ${{ github.event.inputs.lock-separate-windows == 'true' }}
+      - name: Run conda-lock (${{ matrix.platform }})
+        if: ${{ matrix.platform }} == 'win-64' && ${{ github.event.inputs.lock-separate-windows == 'true' }}
         run: |
           micromamba --root-prefix /root/micromamba run -n base_env \
-          conda-lock lock \
-          --platform linux-64 \
-          --platform osx-64 \
-          --platform osx-arm64 \
-          --file ${{ github.event.inputs.environment }}/environment.yaml \
-          --lockfile ${{ github.event.inputs.environment }}-conda-posix.lock.yml \
-          --kind ${{ github.event.inputs.lock_kind }}
-
-      - name: Run conda-lock (Windows)
-        if: ${{ github.event.inputs.lock-separate-windows == 'true' }}
-        run: |
-          micromamba --root-prefix /root/micromamba run -n base_env \
-          conda-lock lock \
-          --platform win-64 \
-          --file ${{ github.event.inputs.environment }}/environment_windows.yaml \
-          --lockfile ${{ github.event.inputs.environment }}-conda-windows.lock.yml \
-          --kind ${{ github.event.inputs.lock_kind }}
+           conda-lock lock \
+           --platform ${{ matrix.platform }} \
+           --file ${{ github.event.inputs.environment }}/environment_windows.yaml \
+           --lockfile conda-${{ matrix.platform }}.lock.yml \
+           --kind ${{ github.event.inputs.lock_kind }}
       
-      - name: Upload conda-lock file (all platforms)
+      - name: Upload conda-lock file (${{ matrix.platform }})
         if: ${{ github.event.inputs.lock-separate-windows == 'false' }}
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ github.event.inputs.environment }}-conda.lock.yml
-          path: ${{ github.event.inputs.environment }}-conda.lock.yml
-      
-      - name: Upload conda-lock file (Linux, MacOS)
-        if: ${{ github.event.inputs.lock-separate-windows == 'true' }}
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ github.event.inputs.environment }}-conda-posix.lock.yml
-          path: ${{ github.event.inputs.environment }}-conda-posix.lock.yml
-
-      - name: Upload conda-lock file (Windows)
-        if: ${{ github.event.inputs.lock-separate-windows == 'true' }}
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ github.event.inputs.environment }}-conda-windows.lock.yml
-          path: ${{ github.event.inputs.environment }}-conda-windows.lock.yml
+          name: ${{ github.event.inputs.environment }}-conda-${{ matrix.platform }}.lock.yml
+          path: conda-${{ matrix.platform }}.lock.yml
 
   conda-pack-linux:
     if: github.event.inputs.pack_linux == 'true'
@@ -134,12 +109,12 @@ jobs:
       - name: Download conda-lock file
         uses: actions/download-artifact@v3
         with:
-          name: ${{ github.event.inputs.environment }}-conda-lock.yaml
+          name: ${{ github.event.inputs.environment }}-conda-linux-64.lock.yml
       - name: Create the environment
         run: |
-          micromamba --root-prefix /root/micromamba create --name ${{ github.event.inputs.environment }}-linux --file ${{ github.event.inputs.environment }}-conda-lock.yaml
+          micromamba --root-prefix /root/micromamba create --name ${{ github.event.inputs.environment }}-linux --file ${{ github.event.inputs.environment }}-conda-linux-64.lock.yml
       - name: Pack the environment
-        run: |          
+        run: |
           micromamba --root-prefix /root/micromamba run -n base_env conda-pack --prefix /root/micromamba/envs/${{ github.event.inputs.environment }}-linux
       - name: Upload conda-packed environment 
         uses: actions/upload-artifact@v3
@@ -155,7 +130,7 @@ jobs:
       - name: Download conda-lock file
         uses: actions/download-artifact@v3
         with:
-          name: ${{ github.event.inputs.environment }}-conda-lock.yaml
+          name: ${{ github.event.inputs.environment }}-conda-win-64.lock.yml
       - name: Download micromamba executable
         run: |
           Invoke-WebRequest -UseBasicParsing https://github.com/mamba-org/micromamba-releases/releases/latest/download/micromamba-win-64 -OutFile micromamba-win-64.exe
@@ -164,7 +139,7 @@ jobs:
           .\micromamba-win-64.exe create -y --name base_env -c conda-forge python conda-pack conda-lock
       - name: Create the environment
         run: |
-          .\micromamba-win-64.exe create -y --name ${{ github.event.inputs.environment }}-win --file ${{ github.event.inputs.environment }}-conda-lock.yaml
+          .\micromamba-win-64.exe create -y --name ${{ github.event.inputs.environment }}-win --file ${{ github.event.inputs.environment }}-conda-win-64.lock.yml
       - name: Pack the environment
         run: |
           .\micromamba-win-64.exe run --name base_env conda-pack --prefix $HOME\micromamba\envs\${{ github.event.inputs.environment }}-win
@@ -182,7 +157,7 @@ jobs:
       - name: Download conda-lock file
         uses: actions/download-artifact@v3
         with:
-          name: ${{ github.event.inputs.environment }}-conda-lock.yaml
+          name: ${{ github.event.inputs.environment }}-conda-osx-64.lock.yml
       - name: Download and extract micromamba executable
         run: |
           curl -Ls https://micro.mamba.pm/api/micromamba/osx-64/latest | tar -xvj bin/micromamba
@@ -191,7 +166,7 @@ jobs:
           ./bin/micromamba create -y --name base_env -c conda-forge python conda-pack conda-lock
       - name: Create the environment
         run: |
-          ./bin/micromamba create -y --name ${{ github.event.inputs.environment }}-macos --file ${{ github.event.inputs.environment }}-conda-lock.yaml
+          ./bin/micromamba create -y --name ${{ github.event.inputs.environment }}-macos --file ${{ github.event.inputs.environment }}-conda-osx-64.lock.yml
       - name: Pack the environment
         run: |
           ./bin/micromamba run --name base_env conda-pack --name ${{ github.event.inputs.environment }}-macos
