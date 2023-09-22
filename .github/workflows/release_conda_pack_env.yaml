@@ -75,7 +75,7 @@ jobs:
            --platform osx-arm64 \
            --platform win-64 \
            --file ${{ github.event.inputs.environment }}/environment.yaml \
-           --lockfile ${{ github.event.inputs.environment }}-conda-lock.yaml \
+           --lockfile ${{ github.event.inputs.environment }}-conda.lock.yml \
            --kind ${{ github.event.inputs.lock_kind }}
       
       - name: Run conda-lock (Linux, MacOS)
@@ -87,7 +87,7 @@ jobs:
           --platform osx-64 \
           --platform osx-arm64 \
           --file ${{ github.event.inputs.environment }}/environment.yaml \
-          --lockfile ${{ github.event.inputs.environment }}-conda-lock-posix.yaml \
+          --lockfile ${{ github.event.inputs.environment }}-conda-posix.lock.yml \
           --kind ${{ github.event.inputs.lock_kind }}
 
       - name: Run conda-lock (Windows)
@@ -97,29 +97,29 @@ jobs:
           conda-lock lock \
           --platform win-64 \
           --file ${{ github.event.inputs.environment }}/environment_windows.yaml \
-          --lockfile ${{ github.event.inputs.environment }}-conda-lock-windows.yaml \
+          --lockfile ${{ github.event.inputs.environment }}-conda-windows.lock.yml \
           --kind ${{ github.event.inputs.lock_kind }}
       
       - name: Upload conda-lock file (all platforms)
         if: ${{ github.event.inputs.lock-separate-windows == 'false' }}
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ github.event.inputs.environment }}-conda.lock.yaml
-          path: ${{ github.event.inputs.environment }}-conda.lock.yaml
+          name: ${{ github.event.inputs.environment }}-conda.lock.yml
+          path: ${{ github.event.inputs.environment }}-conda.lock.yml
       
       - name: Upload conda-lock file (Linux, MacOS)
         if: ${{ github.event.inputs.lock-separate-windows == 'true' }}
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ github.event.inputs.environment }}-conda-posix.lock.yaml
-          path: ${{ github.event.inputs.environment }}-conda-posix.lock.yaml
+          name: ${{ github.event.inputs.environment }}-conda-posix.lock.yml
+          path: ${{ github.event.inputs.environment }}-conda-posix.lock.yml
 
       - name: Upload conda-lock file (Windows)
         if: ${{ github.event.inputs.lock-separate-windows == 'true' }}
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ github.event.inputs.environment }}-conda-windows.lock.yaml
-          path: ${{ github.event.inputs.environment }}-conda-windows.lock.yaml
+          name: ${{ github.event.inputs.environment }}-conda-windows.lock.yml
+          path: ${{ github.event.inputs.environment }}-conda-windows.lock.yml
 
   conda-pack-linux:
     if: github.event.inputs.pack_linux == 'true'
