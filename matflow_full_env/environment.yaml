@@ -4,7 +4,7 @@
 #  - formable
 #  - matflow
 #  TODO: add dream3D?
-name: matflow_full_env_1
+name: matflow_full_env
 channels:
   - conda-forge
 dependencies:

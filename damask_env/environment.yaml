@@ -1,5 +1,5 @@
 # note: the damask conda package provides DAMASK_grid only on Linux/MacOS (not Windows)!
-name: damask_env_1
+name: damask_env
 channels:
   - conda-forge
 dependencies:
