@@ -70,7 +70,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Run conda-lock (${{ matrix.platform }})
-        if: ${{ matrix.platform }} != 'win-64' || ${{ github.event.inputs.lock-separate-windows == 'false' }}
+        if: "${{ matrix.platform != 'win-64' || github.event.inputs.lock-separate-windows == 'false' }}"
         run: |
           micromamba --root-prefix /root/micromamba run -n base_env \
            conda-lock lock \
@@ -80,7 +80,7 @@ jobs:
            --kind ${{ github.event.inputs.lock_kind }}
       
       - name: Run conda-lock (${{ matrix.platform }})
-        if: ${{ matrix.platform }} == 'win-64' && ${{ github.event.inputs.lock-separate-windows == 'true' }}
+        if: "${{ matrix.platform == 'win-64' && github.event.inputs.lock-separate-windows == 'true' }}"
         run: |
           micromamba --root-prefix /root/micromamba run -n base_env \
            conda-lock lock \
@@ -90,7 +90,6 @@ jobs:
            --kind ${{ github.event.inputs.lock_kind }}
       
       - name: Upload conda-lock file (${{ matrix.platform }})
-        if: ${{ github.event.inputs.lock-separate-windows == 'false' }}
         uses: actions/upload-artifact@v3
         with:
           name: ${{ github.event.inputs.environment }}-conda-${{ matrix.platform }}.lock.yml
