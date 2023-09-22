@@ -23,6 +23,11 @@ on:
         required: true
         type: boolean
         default: true
+      pack_macos_arm:
+        description: "Lock and build a packed env for macOS (arm)?"
+        required: true
+        type: boolean
+        default: true
       pack_windows:
         description: "Lock and build a packed env for Windows?"
         required: true
@@ -31,7 +36,7 @@ on:
             
 jobs:
   conda-lock:
-    if: github.event.inputs.pack_linux == 'true' || github.event.inputs.pack_macos == 'true' || github.event.inputs.pack_windows == 'true'
+    if: github.event.inputs.pack_linux == 'true' || github.event.inputs.pack_macos == 'true' || github.event.inputs.pack_macos_arm == 'true' || github.event.inputs.pack_windows == 'true'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -44,7 +49,7 @@ jobs:
         run: |
           micromamba --root-prefix /root/micromamba run -n base_env \
            conda-lock lock \
-           ${{ github.event.inputs.pack_linux == 'true' && '--platform linux-64 ' || '' }}${{ github.event.inputs.pack_macos == 'true' && '--platform osx-64 ' || '' }}${{ github.event.inputs.pack_windows == 'true' && '--platform win-64 ' || '' }} \
+           ${{ github.event.inputs.pack_linux == 'true' && '--platform linux-64 ' || '' }}${{ github.event.inputs.pack_macos == 'true' && '--platform osx-64 ' || '' }}${{ github.event.inputs.pack_macos_arm == 'true' && '--platform osx-arm64 ' || '' }}${{ github.event.inputs.pack_windows == 'true' && '--platform win-64 ' || '' }} \
            --file ${{ github.event.inputs.environment }}/environment.yaml \
            --lockfile ${{ github.event.inputs.environment }}-conda-lock.yaml
       - name: Upload conda-lock file
