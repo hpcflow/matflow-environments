@@ -1,0 +1,19 @@
+# as many matflow environments as possible in one conda env:
+#  - damask (includes DAMASK_grid executable on Linux/MacOS)
+#  - damask_parse
+#  - formable
+#  - matflow
+#  TODO: add dream3D?
+name: matflow_full_env_1
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10 # conda-unpack does not work on Windows with 3.11 for some reason
+  - pip
+  - damask # [not win]
+  - pip:
+      - jupyter
+      - matflow-new
+      - scipy # damask (required by damask-parse) needs scipy, but this is not resolved for some reason
+      - damask-parse
+      - formable
