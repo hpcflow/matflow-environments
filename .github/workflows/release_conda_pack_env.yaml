@@ -75,7 +75,7 @@ jobs:
            --platform osx-arm64 \
            --platform win-64 \
            --file ${{ github.event.inputs.environment }}/environment.yaml \
-           --lockfile ${{ github.event.inputs.environment }}-conda-lock.yaml
+           --lockfile ${{ github.event.inputs.environment }}-conda-lock.yaml \
            --kind ${{ github.event.inputs.lock_kind }}
       
       - name: Run conda-lock (Linux, MacOS)
@@ -87,7 +87,7 @@ jobs:
           --platform osx-64 \
           --platform osx-arm64 \
           --file ${{ github.event.inputs.environment }}/environment.yaml \
-          --lockfile ${{ github.event.inputs.environment }}-conda-lock-posix.yaml
+          --lockfile ${{ github.event.inputs.environment }}-conda-lock-posix.yaml \
           --kind ${{ github.event.inputs.lock_kind }}
 
       - name: Run conda-lock (Windows)
@@ -97,7 +97,7 @@ jobs:
           conda-lock lock \
           --platform win-64 \
           --file ${{ github.event.inputs.environment }}/environment_windows.yaml \
-          --lockfile ${{ github.event.inputs.environment }}-conda-lock-windows.yaml
+          --lockfile ${{ github.event.inputs.environment }}-conda-lock-windows.yaml \
           --kind ${{ github.event.inputs.lock_kind }}
       
       - name: Upload conda-lock file (all platforms)
