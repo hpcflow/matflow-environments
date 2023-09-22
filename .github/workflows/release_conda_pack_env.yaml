@@ -13,30 +13,40 @@ on:
           - formable_env
           - matflow_env
           - matflow_full_env
+      lock:
+        description: "Generate a lock file?"
+        required: true
+        type: boolean
+        default: true
+      lock-separate-windows:
+        description: "Expect a separate environment_windows.yaml when locking for Windows?"
+        required: true
+        type: boolean
+        default: false
       pack_linux:
-        description: "Lock and build a packed env for Linux?"
+        description: "Build a packed env for Linux?"
         required: true
         type: boolean
-        default: true
+        default: false
       pack_macos:
-        description: "Lock and build a packed env for macOS?"
+        description: "Build a packed env for macOS?"
         required: true
         type: boolean
-        default: true
+        default: false
       pack_macos_arm:
-        description: "Lock and build a packed env for macOS (arm)?"
+        description: "Build a packed env for macOS (Arm)?"
         required: true
         type: boolean
-        default: true
+        default: false
       pack_windows:
-        description: "Lock and build a packed env for Windows?"
+        description: "Build a packed env for Windows?"
         required: true
         type: boolean
-        default: true
+        default: false
             
 jobs:
   conda-lock:
-    if: github.event.inputs.pack_linux == 'true' || github.event.inputs.pack_macos == 'true' || github.event.inputs.pack_macos_arm == 'true' || github.event.inputs.pack_windows == 'true'
+    if: github.event.inputs.lock == 'true'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -45,19 +55,60 @@ jobs:
       image: ghcr.io/hpcflow/centos7-micromamba:latest
     steps:
       - uses: actions/checkout@v3
-      - name: Run conda-lock
+
+      - name: Run conda-lock (all platforms)
+        if: ${{ github.event.inputs.lock-separate-windows == 'false' }}
         run: |
           micromamba --root-prefix /root/micromamba run -n base_env \
            conda-lock lock \
-           ${{ github.event.inputs.pack_linux == 'true' && '--platform linux-64 ' || '' }}${{ github.event.inputs.pack_macos == 'true' && '--platform osx-64 ' || '' }}${{ github.event.inputs.pack_macos_arm == 'true' && '--platform osx-arm64 ' || '' }}${{ github.event.inputs.pack_windows == 'true' && '--platform win-64 ' || '' }} \
+           --platform linux-64 \
+           --platform osx-64 \
+           --platform osx-arm64 \
+           --platform win-64 \
            --file ${{ github.event.inputs.environment }}/environment.yaml \
            --lockfile ${{ github.event.inputs.environment }}-conda-lock.yaml
-      - name: Upload conda-lock file
+      
+      - name: Run conda-lock (Linux, MacOS)
+        if: ${{ github.event.inputs.lock-separate-windows == 'true' }}
+        run: |
+          micromamba --root-prefix /root/micromamba run -n base_env \
+          conda-lock lock \
+          --platform linux-64 \
+          --platform osx-64 \
+          --platform osx-arm64 \
+          --file ${{ github.event.inputs.environment }}/environment.yaml \
+          --lockfile ${{ github.event.inputs.environment }}-conda-lock-posix.yaml
+
+      - name: Run conda-lock (Windows)
+        if: ${{ github.event.inputs.lock-separate-windows == 'true' }}
+        run: |
+          micromamba --root-prefix /root/micromamba run -n base_env \
+          conda-lock lock \
+          --platform win-64 \
+          --file ${{ github.event.inputs.environment }}/environment_windows.yaml \
+          --lockfile ${{ github.event.inputs.environment }}-conda-lock-win.yaml
+      
+      - name: Upload conda-lock file (all platforms)
+        if: ${{ github.event.inputs.lock-separate-windows == 'false' }}
         uses: actions/upload-artifact@v3
         with:
           name: ${{ github.event.inputs.environment }}-conda-lock.yaml
           path: ${{ github.event.inputs.environment }}-conda-lock.yaml
-  
+      
+      - name: Upload conda-lock file (Linux, MacOS)
+        if: ${{ github.event.inputs.lock-separate-windows == 'true' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ github.event.inputs.environment }}-conda-lock-posix.yaml
+          path: ${{ github.event.inputs.environment }}-conda-lock-posix.yaml
+
+      - name: Upload conda-lock file (Linux, MacOS)
+        if: ${{ github.event.inputs.lock-separate-windows == 'true' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ github.event.inputs.environment }}-conda-lock-windows.yaml
+          path: ${{ github.event.inputs.environment }}-conda-lock-windows.yaml
+
   conda-pack-linux:
     if: github.event.inputs.pack_linux == 'true'
     needs: [conda-lock]
