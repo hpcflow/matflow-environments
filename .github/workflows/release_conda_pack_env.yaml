@@ -32,6 +32,9 @@ on:
           - lock
           - explicit
           - env
+      lock_platforms:
+        description: "Platforms to lock to."
+        default: '["linux-64", "osx-64", "osx-arm64", "win-64"]'
       pack_linux:
         description: "Build a packed env for Linux?"
         required: true
@@ -39,11 +42,6 @@ on:
         default: false
       pack_macos:
         description: "Build a packed env for macOS?"
-        required: true
-        type: boolean
-        default: false
-      pack_macos_arm:
-        description: "Build a packed env for macOS (Arm)?"
         required: true
         type: boolean
         default: false
@@ -65,7 +63,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [linux-64, osx-64, osx-arm64, win-64]
+        platform: ${{ fromJSON(github.event.inputs.lock_platforms)}}
     steps:
       - uses: actions/checkout@v3
 
