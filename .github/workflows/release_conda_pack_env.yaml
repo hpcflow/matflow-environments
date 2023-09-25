@@ -113,7 +113,7 @@ jobs:
         run: ls -R          
       - name: Create the environment
         run: |
-          micromamba --root-prefix /root/micromamba create --name ${{ github.event.inputs.environment }}-linux --file ${{ github.event.inputs.environment }}-conda-linux-64.lock.yml
+          micromamba --root-prefix /root/micromamba create --name ${{ github.event.inputs.environment }}-linux --file conda-linux-64.lock.yml
       - name: Pack the environment
         run: |
           micromamba --root-prefix /root/micromamba run -n base_env conda-pack --prefix /root/micromamba/envs/${{ github.event.inputs.environment }}-linux
@@ -140,7 +140,7 @@ jobs:
           .\micromamba-win-64.exe create -y --name base_env -c conda-forge python conda-pack conda-lock
       - name: Create the environment
         run: |
-          .\micromamba-win-64.exe create -y --name ${{ github.event.inputs.environment }}-win --file ${{ github.event.inputs.environment }}-conda-win-64.lock.yml
+          .\micromamba-win-64.exe create -y --name ${{ github.event.inputs.environment }}-win --file conda-win-64.lock.yml
       - name: Pack the environment
         run: |
           .\micromamba-win-64.exe run --name base_env conda-pack --prefix $HOME\micromamba\envs\${{ github.event.inputs.environment }}-win
@@ -167,7 +167,7 @@ jobs:
           ./bin/micromamba create -y --name base_env -c conda-forge python conda-pack conda-lock
       - name: Create the environment
         run: |
-          ./bin/micromamba create -y --name ${{ github.event.inputs.environment }}-macos --file ${{ github.event.inputs.environment }}-conda-osx-64.lock.yml
+          ./bin/micromamba create -y --name ${{ github.event.inputs.environment }}-macos --file conda-osx-64.lock.yml
       - name: Pack the environment
         run: |
           ./bin/micromamba run --name base_env conda-pack --name ${{ github.event.inputs.environment }}-macos
