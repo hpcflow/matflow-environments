@@ -109,6 +109,8 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ${{ github.event.inputs.environment }}-conda-linux-64.lock.yml
+      - name: Display structure of downloaded files
+        run: ls -R          
       - name: Create the environment
         run: |
           micromamba --root-prefix /root/micromamba create --name ${{ github.event.inputs.environment }}-linux --file ${{ github.event.inputs.environment }}-conda-linux-64.lock.yml
