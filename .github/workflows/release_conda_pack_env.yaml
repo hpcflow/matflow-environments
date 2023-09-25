@@ -12,6 +12,7 @@ on:
           - dream3d_env
           - formable_env
           - matflow_env
+          - matflow_damask_full_env
           - matflow_full_env
       lock:
         description: "Generate a lock file?"
