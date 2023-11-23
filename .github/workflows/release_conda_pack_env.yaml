@@ -10,6 +10,7 @@ on:
           - damask_parse_env
           - damask_env
           - dream3d_env
+          - defdap_env
           - formable_env
           - matflow_env
           - matflow_damask_full_env
