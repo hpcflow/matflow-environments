@@ -15,6 +15,7 @@ on:
           - matflow_env
           - matflow_damask_full_env
           - matflow_full_env
+          - sklearn_env
       lock:
         description: "Generate a lock file?"
         required: true
