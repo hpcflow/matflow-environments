@@ -15,6 +15,6 @@ dependencies:
       - jupyter
       - matflow-new
       - scipy # damask (required by damask-parse) needs scipy, but this is not resolved for some reason
-      - numpy==1.23.5 # damask `Grid.scale` does not work with latest numpy
+      - damask==3.0.0a7 # our use of Grid.scale in MatFlow not compatible with latest damask package
       - damask-parse
       - formable
