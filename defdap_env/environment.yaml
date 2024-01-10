@@ -6,5 +6,6 @@ dependencies:
   - pip
   - pip:
       - numpy==1.23.5
+      - scipy==1.10.1
       - matflow-new
       - defdap==0.93.4
