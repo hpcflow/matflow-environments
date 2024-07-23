@@ -68,7 +68,7 @@ jobs:
       matrix:
         platform: ${{ fromJSON(github.event.inputs.lock_platforms)}}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Run conda-lock (${{ matrix.platform }})
         if: "${{ matrix.platform != 'win-64' || github.event.inputs.lock-separate-windows == 'false' }}"
@@ -91,7 +91,7 @@ jobs:
            --kind ${{ github.event.inputs.lock_kind }}
       
       - name: Upload conda-lock file (${{ matrix.platform }})
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ github.event.inputs.environment }}-conda-${{ matrix.platform }}.lock.yml
           path: conda-${{ matrix.platform }}.lock.yml
@@ -107,7 +107,7 @@ jobs:
       image: ghcr.io/hpcflow/centos7-micromamba:latest
     steps:
       - name: Download conda-lock file
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ github.event.inputs.environment }}-conda-linux-64.lock.yml
       - name: Display structure of downloaded files
@@ -119,7 +119,7 @@ jobs:
         run: |
           micromamba --root-prefix /root/micromamba run -n base_env conda-pack --prefix /root/micromamba/envs/${{ github.event.inputs.environment }}-linux
       - name: Upload conda-packed environment 
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ github.event.inputs.environment }}-linux.tar.gz
           path: ${{ github.event.inputs.environment }}-linux.tar.gz
@@ -130,7 +130,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Download conda-lock file
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ github.event.inputs.environment }}-conda-win-64.lock.yml
       - name: Download micromamba executable
@@ -146,7 +146,7 @@ jobs:
         run: |
           .\micromamba-win-64.exe run --name base_env conda-pack --prefix $HOME\micromamba\envs\${{ github.event.inputs.environment }}-win
       - name: Upload conda-packed environment 
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ github.event.inputs.environment }}-win.tar.gz
           path: ${{ github.event.inputs.environment }}-win.tar.gz
@@ -157,7 +157,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Download conda-lock file
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ github.event.inputs.environment }}-conda-osx-64.lock.yml
       - name: Download and extract micromamba executable
@@ -173,7 +173,7 @@ jobs:
         run: |
           ./bin/micromamba run --name base_env conda-pack --name ${{ github.event.inputs.environment }}-macos
       - name: Upload conda-packed environment 
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ github.event.inputs.environment }}-macos.tar.gz
           path: ${{ github.event.inputs.environment }}-macos.tar.gz
