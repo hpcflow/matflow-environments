@@ -58,6 +58,9 @@ jobs:
   conda-lock:
     if: github.event.inputs.lock == 'true'
     runs-on: ubuntu-latest
+    env:
+      ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: "true"
+      ACTIONS_RUNNER_FORCE_ACTIONS_NODE_VERSION: node16
     defaults:
       run:
         shell: bash -l {0}
@@ -100,6 +103,9 @@ jobs:
     if: github.event.inputs.pack_linux == 'true'
     needs: [conda-lock]
     runs-on: ubuntu-latest
+    env:
+      ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: "true"
+      ACTIONS_RUNNER_FORCE_ACTIONS_NODE_VERSION: node16
     defaults:
       run:
         shell: bash -l {0}
