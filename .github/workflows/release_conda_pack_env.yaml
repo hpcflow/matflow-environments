@@ -58,23 +58,18 @@ jobs:
   conda-lock:
     if: github.event.inputs.lock == 'true'
     runs-on: ubuntu-latest
-    env:
-      ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: "true"
-      ACTIONS_RUNNER_FORCE_ACTIONS_NODE_VERSION: node16
     defaults:
       run:
         shell: bash -l {0}
-    container:  
-      image: ghcr.io/hpcflow/centos7-micromamba:latest
     strategy:
       fail-fast: false
       matrix:
         platform: ${{ fromJSON(github.event.inputs.lock_platforms)}}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Run conda-lock (${{ matrix.platform }})
-        if: "${{ matrix.platform != 'win-64' || github.event.inputs.lock-separate-windows == 'false' }}"
+        if: ${{ contains(fromJson('["linux-64", "osx-64", "osx-arm64"]'), matrix.platform) || github.event.inputs.lock-separate-windows == 'false' }}
         run: |
           micromamba --root-prefix /root/micromamba run -n base_env \
            conda-lock lock \
