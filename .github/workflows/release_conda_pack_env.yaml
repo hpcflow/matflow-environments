@@ -68,10 +68,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Download and extract micromamba executable
+        run: |
+          curl -Ls https://micro.mamba.pm/api/micromamba/linux-64/latest | tar -xvj bin/micromamba
+
+      - name:  Create a base environment including conda-lock
+        run: |
+          ./bin/micromamba create --yes --name base_env -c conda-forge python conda-lock
+
       - name: Run conda-lock (${{ matrix.platform }})
         if: ${{ contains(fromJson('["linux-64", "osx-64", "osx-arm64"]'), matrix.platform) || github.event.inputs.lock-separate-windows == 'false' }}
         run: |
-          micromamba --root-prefix /root/micromamba run -n base_env \
+          ./bin/micromamba run -n base_env \
            conda-lock lock \
            --platform ${{ matrix.platform }} \
            --file ${{ github.event.inputs.environment }}/environment.yaml \
@@ -81,7 +89,7 @@ jobs:
       - name: Run conda-lock (${{ matrix.platform }})
         if: "${{ matrix.platform == 'win-64' && github.event.inputs.lock-separate-windows == 'true' }}"
         run: |
-          micromamba --root-prefix /root/micromamba run -n base_env \
+          ./bin/micromamba run -n base_env \
            conda-lock lock \
            --platform ${{ matrix.platform }} \
            --file ${{ github.event.inputs.environment }}/environment_windows.yaml \
