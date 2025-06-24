@@ -1,5 +1,4 @@
 # as many matflow environments as possible in one conda env:
-#  - damask (includes DAMASK_grid executable on Linux/MacOS)
 #  - damask_parse
 #  - formable
 #  - matflow
@@ -13,8 +12,8 @@ dependencies:
   - pip
   - pip:
       - jupyter
-      - matflow-new
-      - scipy # damask (required by damask-parse) needs scipy, but this is not resolved for some reason
-      - damask==3.0.0a7 # our use of Grid.scale in MatFlow not compatible with latest damask package
+      - matflow-new      
+      - damask==3.0.0a7.post0 # our use of Grid.scale in MatFlow not compatible with latest damask package
       - damask-parse
       - formable
+      - numpy<2
