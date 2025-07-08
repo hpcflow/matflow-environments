@@ -125,6 +125,8 @@ jobs:
             ls -l             
             micromamba --root-prefix /root/micromamba create --name ${{ github.event.inputs.environment }}-linux --file conda-linux-64.lock.yml
             micromamba --root-prefix /root/micromamba run -n base_env conda-pack --prefix /root/micromamba/envs/${{ github.event.inputs.environment }}-linux
+      - name: Set correct permissions
+        run: chmod a+r ${{ github.event.inputs.environment }}-linux.tar.gz            
       - name: Upload conda-packed environment 
         uses: actions/upload-artifact@v4
         with:
