@@ -106,27 +106,21 @@ jobs:
     if: github.event.inputs.pack_linux == 'true'
     needs: [conda-lock]
     runs-on: ubuntu-latest
-    env:
-      ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: "true"
-      ACTIONS_RUNNER_FORCE_ACTIONS_NODE_VERSION: node16
-    defaults:
-      run:
-        shell: bash -l {0}
     container:  
       image: ghcr.io/hpcflow/centos7-micromamba:latest
     steps:
       - name: Download conda-lock file
         uses: actions/download-artifact@v4
         with:
-          name: ${{ github.event.inputs.environment }}-conda-linux-64.lock.yml
-      - name: Display structure of downloaded files
-        run: ls -R          
-      - name: Create the environment
-        run: |
-          micromamba --root-prefix /root/micromamba create --name ${{ github.event.inputs.environment }}-linux --file conda-linux-64.lock.yml
-      - name: Pack the environment
-        run: |
-          micromamba --root-prefix /root/micromamba run -n base_env conda-pack --prefix /root/micromamba/envs/${{ github.event.inputs.environment }}-linux
+          name: ${{ github.event.inputs.environment }}-conda-linux-64.lock.yml      
+      - name: Run conda-pack within Docker
+        uses: addnab/docker-run-action@v3
+        with:
+          image: ghcr.io/hpcflow/centos7-poetry:latest
+          options: -v ${{ github.workspace }}:/home --env GH_TOKEN=${{ secrets.GITHUB_TOKEN }}
+          run: |              
+            micromamba --root-prefix /root/micromamba create --name ${{ github.event.inputs.environment }}-linux --file conda-linux-64.lock.yml
+            micromamba --root-prefix /root/micromamba run -n base_env conda-pack --prefix /root/micromamba/envs/${{ github.event.inputs.environment }}-linux
       - name: Upload conda-packed environment 
         uses: actions/upload-artifact@v4
         with:
