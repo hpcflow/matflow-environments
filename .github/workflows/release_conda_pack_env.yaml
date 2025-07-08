@@ -119,7 +119,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: ghcr.io/hpcflow/centos7-micromamba:latest
-          options: -v ${{ github.workspace }}:/home --env GH_TOKEN=${{ secrets.GITHUB_TOKEN }}
+          options: -v ${{ github.workspace }}:/home -w /home --env GH_TOKEN=${{ secrets.GITHUB_TOKEN }}
           run: |
             pwd
             ls -l             
