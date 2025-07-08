@@ -106,8 +106,6 @@ jobs:
     if: github.event.inputs.pack_linux == 'true'
     needs: [conda-lock]
     runs-on: ubuntu-latest
-    container:  
-      image: ghcr.io/hpcflow/centos7-micromamba:latest
     steps:
       - name: Download conda-lock file
         uses: actions/download-artifact@v4
