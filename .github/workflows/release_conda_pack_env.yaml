@@ -112,13 +112,16 @@ jobs:
         with:
           name: ${{ github.event.inputs.environment }}-conda-linux-64.lock.yml      
       - name: list files
-        run: ls -l
+        run: |
+          ls -l
+          pwd
       - name: Run conda-pack within Docker
         uses: addnab/docker-run-action@v3
         with:
           image: ghcr.io/hpcflow/centos7-micromamba:latest
           options: -v ${{ github.workspace }}:/home --env GH_TOKEN=${{ secrets.GITHUB_TOKEN }}
           run: |
+            pwd
             ls -l             
             micromamba --root-prefix /root/micromamba create --name ${{ github.event.inputs.environment }}-linux --file conda-linux-64.lock.yml
             micromamba --root-prefix /root/micromamba run -n base_env conda-pack --prefix /root/micromamba/envs/${{ github.event.inputs.environment }}-linux
