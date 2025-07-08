@@ -1,0 +1,13 @@
+# note: Work in progress
+- name: vpsc_env
+  setup: |
+    module purge
+    module load compilers/gcc/14.2.0
+    gfortran -fdefault-real-8 -std=legacy vpsc8dim.for vpsc8main.for vpsc8sub.for -o vpsc8
+    rm -v *.mod
+  executables:
+    - label: vpsc8
+      instances:
+        - command: ./vpsc8
+          num_cores: 1
+          parallel_mode: null
