@@ -227,6 +227,10 @@ jobs:
     permissions:
       contents: write
     steps:
+      - name: list files
+        run: |
+          pwd
+          ls -l          
       - name: Get current date
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d-%H:%M')"
@@ -236,5 +240,5 @@ jobs:
         with:
           tag_name: ${{ steps.date.outputs.date }}
           files: |
-            **/*.lock.yml
-            **/*.tar.gz
+            *.lock.yml
+            *.tar.gz
