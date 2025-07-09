@@ -69,10 +69,12 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Download and extract micromamba executable
+        if: matrix.platform != 'linux-64'
         run: |
           curl -Ls https://micro.mamba.pm/api/micromamba/linux-64/latest | tar -xvj bin/micromamba
 
       - name:  Create a base environment including conda-lock
+        if: matrix.platform != 'linux-64'
         run: |
           ./bin/micromamba create --yes --name base_env -c conda-forge python conda-lock
 
