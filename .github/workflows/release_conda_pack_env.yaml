@@ -231,7 +231,7 @@ jobs:
       - name: Get current date-time
         id: date
         run: |
-          DATETIME=$(date +'%Y-%m-%d-%H%M')"
+          DATETIME=$(date +'%Y-%m-%d-%H%M')
           echo "DATETIME is: $DATETIME"
           echo "datetime=$DATETIME" >> $GITHUB_OUTPUT
       - name: Add a new tag (current date-time)
