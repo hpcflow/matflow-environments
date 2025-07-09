@@ -155,7 +155,7 @@ jobs:
           .\micromamba-win-64.exe --root-prefix ~\micromamba create -y --name ${{ github.event.inputs.environment }}-win --file conda-win-64.lock.yml
       - name: Pack the environment
         run: |
-          .\micromamba-win-64.exe  --root-prefix ~\micromamba run --name base_env conda-pack --prefix ~\micromamba\envs\${{ github.event.inputs.environment }}-win
+          .\micromamba-win-64.exe  --root-prefix ~\micromamba run --name base_env conda-pack --prefix C:\Users\runneradmin\micromamba\envs\${{ github.event.inputs.environment }}-win
       - name: Upload conda-packed environment 
         uses: actions/upload-artifact@v4
         with:
