@@ -149,13 +149,13 @@ jobs:
           Invoke-WebRequest -UseBasicParsing https://github.com/mamba-org/micromamba-releases/releases/latest/download/micromamba-win-64 -OutFile micromamba-win-64.exe
       - name:  Create a base environment including conda-pack
         run: |
-          .\micromamba-win-64.exe create -y --name base_env -c conda-forge python conda-pack conda-lock
+          .\micromamba-win-64.exe --root-prefix ~\micromamba create -y --name base_env -c conda-forge python conda-pack conda-lock
       - name: Create the environment
         run: |
-          .\micromamba-win-64.exe create -y --name ${{ github.event.inputs.environment }}-win --file conda-win-64.lock.yml
+          .\micromamba-win-64.exe --root-prefix ~\micromamba create -y --name ${{ github.event.inputs.environment }}-win --file conda-win-64.lock.yml
       - name: Pack the environment
         run: |
-          .\micromamba-win-64.exe run --name base_env conda-pack --name ${{ github.event.inputs.environment }}-win
+          .\micromamba-win-64.exe  --root-prefix ~\micromamba run --name base_env conda-pack --prefix ~\micromamba\envs\${{ github.event.inputs.environment }}-win
       - name: Upload conda-packed environment 
         uses: actions/upload-artifact@v4
         with:
