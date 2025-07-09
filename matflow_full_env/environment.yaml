@@ -1,14 +1,13 @@
-# as many matflow environments as possible in one conda env:
-#  - damask_parse
-#  - formable
-#  - matflow
-#  TODO: add dream3D?
-# this is the same as `matflow_damask_full_env` but without the damask conda package
+# as many matflow environments as possible in one conda env
 name: matflow_full_env
 channels:
   - conda-forge
 dependencies:
   - python=3.10 # conda-unpack does not work on Windows with 3.11 for some reason
+  - bcrypt        # ! these packages are requirements of the below pip dependencies, but I think
+  - cryptography  # !   conda lock does not resolve the correct manylinux wheels on our old CentOS
+  - pillow        # !   docker image, meaning there is a hash mismatch when trying to create the
+  - pyzmq=26.4.0  # !   environment :(
   - pip
   - pip:
       - jupyter
