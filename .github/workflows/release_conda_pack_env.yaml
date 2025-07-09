@@ -97,7 +97,7 @@ jobs:
           chmod +r conda-${{ matrix.platform }}.lock.yml
 
       - name: Run conda-lock (${{ matrix.platform }})
-        if: ${{ contains(fromJson('["osx-64", "osx-arm64"]'), matrix.platform) || github.event.inputs.lock-separate-windows == 'false' }}
+        if: ${{ contains(fromJson('["osx-64", "osx-arm64"]'), matrix.platform) || (github.event.inputs.lock-separate-windows == 'false' && matrix.platform == 'win-64')}}
         run: |
           ./bin/micromamba run -n base_env \
            conda-lock lock \
