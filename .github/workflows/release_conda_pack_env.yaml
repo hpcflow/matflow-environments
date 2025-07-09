@@ -227,20 +227,28 @@ jobs:
     permissions:
       contents: write
     steps:
+      - uses: actions/checkout@v4      
+      - name: Get current date-time
+        id: date
+        run: |
+          DATETIME=$(date +'%Y-%m-%d-%H%M')"
+          echo "DATETIME is: $DATETIME"
+          echo "datetime=$DATETIME" >> $GITHUB_OUTPUT
+      - name: Add a new tag (current date-time)
+        run: |
+          git tag ${{ steps.date.outputs.datetime }}
+          git push && git push origin ${{ steps.date.outputs.datetime }}      
       - name: Download artifacts
         uses: actions/download-artifact@v4
       - name: list files
         run: |
           pwd
           ls -l          
-      - name: Get current date
-        id: date
-        run: echo "::set-output name=date::$(date +'%Y-%m-%d-%H:%M')"
       - name: Release
         id: release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.date.outputs.date }}
+          tag_name: ${{ steps.date.outputs.datetime }}
           files: |
-            *.lock.yml
-            *.tar.gz
+            **/*.lock.yml
+            **/*.tar.gz
