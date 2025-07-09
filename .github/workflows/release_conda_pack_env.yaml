@@ -76,7 +76,7 @@ jobs:
         run: |
           ./bin/micromamba create --yes --name base_env -c conda-forge python conda-lock
 
-      - name: Run conda-lock within Docker (CentOS)
+      - name: Run conda-lock within Docker (linux - CentOS)
         if: matrix.platform == 'linux-64'
         uses: addnab/docker-run-action@v3
         with:
@@ -90,13 +90,13 @@ jobs:
             --lockfile conda-${{ matrix.platform }}.lock.yml \
             --kind ${{ github.event.inputs.lock_kind }}
       
-      - name: Take ownership of generated artifact (CentOS)
+      - name: Take ownership of generated artifact (linux - CentOS)
         if: matrix.platform == 'linux-64'
         run: |
           sudo chown $USER:$USER conda-${{ matrix.platform }}.lock.yml
           chmod +r conda-${{ matrix.platform }}.lock.yml
 
-      - name: Run conda-lock (${{ matrix.platform }})
+      - name: Run conda-lock (osx, osx-arm64, or windows (same file))
         if: ${{ contains(fromJson('["osx-64", "osx-arm64"]'), matrix.platform) || (github.event.inputs.lock-separate-windows == 'false' && matrix.platform == 'win-64')}}
         run: |
           ./bin/micromamba run -n base_env \
@@ -106,7 +106,7 @@ jobs:
            --lockfile conda-${{ matrix.platform }}.lock.yml \
            --kind ${{ github.event.inputs.lock_kind }}
       
-      - name: Run conda-lock (${{ matrix.platform }})
+      - name: Run conda-lock (separate Windows file)
         if: "${{ matrix.platform == 'win-64' && github.event.inputs.lock-separate-windows == 'true' }}"
         run: |
           ./bin/micromamba run -n base_env \
