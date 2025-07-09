@@ -76,8 +76,28 @@ jobs:
         run: |
           ./bin/micromamba create --yes --name base_env -c conda-forge python conda-lock
 
+      - name: Run conda-lock within Docker (CentOS)
+        if: matrix.platform == 'linux-64'
+        uses: addnab/docker-run-action@v3
+        with:
+          image: ghcr.io/hpcflow/centos7-micromamba:latest
+          options: -v ${{ github.workspace }}:/home -w /home --env GH_TOKEN=${{ secrets.GITHUB_TOKEN }}
+          run: |
+            micromamba run -n base_env \
+            conda-lock lock \
+            --platform ${{ matrix.platform }} \
+            --file ${{ github.event.inputs.environment }}/environment.yaml \
+            --lockfile conda-${{ matrix.platform }}.lock.yml \
+            --kind ${{ github.event.inputs.lock_kind }}
+      
+      - name: Take ownership of generated artifact (CentOS)
+        if: matrix.platform == 'linux-64'
+        run: |
+          sudo chown $USER:$USER conda-${{ matrix.platform }}.lock.yml
+          chmod +r conda-${{ matrix.platform }}.lock.yml
+
       - name: Run conda-lock (${{ matrix.platform }})
-        if: ${{ contains(fromJson('["linux-64", "osx-64", "osx-arm64"]'), matrix.platform) || github.event.inputs.lock-separate-windows == 'false' }}
+        if: ${{ contains(fromJson('["osx-64", "osx-arm64"]'), matrix.platform) || github.event.inputs.lock-separate-windows == 'false' }}
         run: |
           ./bin/micromamba run -n base_env \
            conda-lock lock \
