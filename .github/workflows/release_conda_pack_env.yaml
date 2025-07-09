@@ -245,9 +245,10 @@ jobs:
           pwd
           ls -l          
       - name: Release
-        id: release
+        id: release        
         uses: softprops/action-gh-release@v2
         with:
+          name: ${{ github.event.inputs.environment }}-${{ steps.date.outputs.datetime }}
           tag_name: ${{ steps.date.outputs.datetime }}
           files: |
             **/*.lock.yml
