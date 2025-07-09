@@ -53,6 +53,11 @@ on:
         required: true
         type: boolean
         default: false
+      release:
+        description: "Generate a GitHub release?"
+        required: true
+        type: boolean
+        default: false
 
 jobs:
   conda-lock:
@@ -210,3 +215,26 @@ jobs:
         with:
           name: ${{ github.event.inputs.environment }}-macos.tar.gz
           path: ${{ github.event.inputs.environment }}-macos.tar.gz
+  
+  release:
+    if: github.event.inputs.release == 'true'
+    needs:
+      - conda-lock
+      - conda-pack-linux
+      - conda-pack-windows
+      - conda-pack-macos
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d-%H:%M')"
+      - name: Release
+        id: release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.date.outputs.date }}
+          files: |
+            **/*.lock.yml
+            **/*.tar.gz
